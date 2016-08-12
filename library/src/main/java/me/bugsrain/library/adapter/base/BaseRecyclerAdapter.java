@@ -20,8 +20,8 @@ public abstract class BaseRecyclerAdapter extends RecyclerView.Adapter<BaseViewH
 
     /**
      * 1111 1111 1111 1111 1111 1111 1111 11-------------------1-------------------1
-     * (ITEM_HEADER_MASK_MIN ~ ITEM_HEADER_MASK---------|                |
-     * (ITEM_FOOTER_MASK_MIN ~ ITEM_FOOTER_MASK]-------------------------|
+     * (ITEM_HEADER_MASK_MIN ~ ITEM_HEADER_MASK]-------------------------|
+     * (ITEM_FOOTER_MASK_MIN ~ ITEM_FOOTER_MASK]-------|
      */
     //块头部遮罩值
     private final static int ITEM_HEADER_MASK = Integer.MAX_VALUE;
@@ -72,7 +72,9 @@ public abstract class BaseRecyclerAdapter extends RecyclerView.Adapter<BaseViewH
 
     @Override
     public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+//        Section section = mSections.get(viewType);
         Section section = mSections.get(getTypeCompat(viewType));
+
         if (viewType > ITEM_HEADER_MASK_MIN && section.isHasHeader()) {
             return section.getHeaderProvider().onCreateViewHolder(mInflater, parent, viewType);
         } else if (viewType > ITEM_FOOTER_MASK_MIN && viewType <= ITEM_FOOTER_MASK && section.isHasFooter()) {

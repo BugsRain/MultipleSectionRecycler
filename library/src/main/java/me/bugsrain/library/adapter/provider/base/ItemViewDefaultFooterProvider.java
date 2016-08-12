@@ -35,4 +35,6 @@ public class ItemViewDefaultFooterProvider extends ItemViewProvider<ItemViewDefa
             textView = (TextView) itemView.findViewById(R.id.left);
         }
     }
+
+
 }

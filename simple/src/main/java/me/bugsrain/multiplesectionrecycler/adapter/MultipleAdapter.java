@@ -54,4 +54,20 @@ public class MultipleAdapter extends BaseRecyclerAdapter {
                 break;
         }
     }
+
+    @Override
+    public String initSectionHeaderLeftContent(Section section) {
+        if(section.getType() == 1){
+            return "测试标题";
+        }
+        return super.initSectionHeaderLeftContent(section);
+    }
+
+    @Override
+    public String initSectionFooterLeftContent(Section section) {
+        if(section.getType() == 1){
+            return "测试底部";
+        }
+        return super.initSectionFooterLeftContent(section);
+    }
 }
