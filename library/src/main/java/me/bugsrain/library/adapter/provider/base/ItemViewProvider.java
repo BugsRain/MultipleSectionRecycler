@@ -35,4 +35,7 @@ public abstract class ItemViewProvider<V extends BaseViewHolder, M> {
 
     public abstract void onBindViewHolder(@NonNull V holder, int position, Section<M> section);
 
+    public  void onDetachedFromWindow(@NonNull V holder, Section<M> section){
+
+    }
 }

@@ -47,11 +47,24 @@ public class ItemViewBannerProvider extends ItemViewProvider<ItemViewBannerProvi
                     //设置两个点图片作为翻页指示器，不设置则没有指示器，可以根据自己需求自行配合自己的指示器,不需要圆点指示器可用不设
                     //设置指示器的方向
                     .setPageIndicatorAlign(ConvenientBanner.PageIndicatorAlign.ALIGN_PARENT_RIGHT);
-            holder.convenientBanner.startTurning(6000);
+
+
         }
+        if(!holder.convenientBanner.isTurning()){
+            holder.convenientBanner.startTurning(3000);
+            System.out.println("-------------------------> 轮播开始了");
+        }
+
     }
 
-
+    @Override
+    public void onDetachedFromWindow(@NonNull ViewHolder holder, Section<List<Integer>> section) {
+        super.onDetachedFromWindow(holder, section);
+        if(holder.convenientBanner.isTurning()){
+            holder.convenientBanner.stopTurning();
+            System.out.println("-------------------------> 轮播结束了");
+        }
+    }
 
     class ViewHolder extends BaseViewHolder {
         ConvenientBanner convenientBanner;

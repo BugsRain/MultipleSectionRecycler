@@ -13,6 +13,7 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder {
 
     protected BaseViewHolder(View itemView, int type) {
         super(itemView);
+        this.type = type;
 
     }
 

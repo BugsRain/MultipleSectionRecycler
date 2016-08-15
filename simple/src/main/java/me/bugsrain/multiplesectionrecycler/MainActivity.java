@@ -1,9 +1,9 @@
 package me.bugsrain.multiplesectionrecycler;
 
 import android.graphics.Color;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
@@ -46,20 +46,25 @@ public class MainActivity extends AppCompatActivity {
         }
 
         recyclerView = (RecyclerView) findViewById(R.id.list);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        multipleAdapter = new MultipleAdapter(this, banner, data1, data2, data3);
+        multipleAdapter = new MultipleAdapter(this, banner, data1, data2, data3, null);
+
+
         recyclerView.setAdapter(multipleAdapter);
+
+        findViewById(R.id.btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                for (int i = 0; i < 4; i++) {
+                    data1.add("新的数据");
+                }
+
+                for (int i = 0; i < 3; i++) {
+                    data3.add("新的数据");
+                }
+
+                multipleAdapter.refreshData();
+            }
+        });
     }
 
-    public void addData(View v) {
-        for (int i = 0; i < 4; i++) {
-            data1.add("新的数据");
-        }
-
-        for (int i = 0; i < 3; i++) {
-            data3.add("新的数据");
-        }
-
-        multipleAdapter.refreshData();
-    }
 }

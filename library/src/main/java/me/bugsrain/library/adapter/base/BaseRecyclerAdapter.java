@@ -2,6 +2,7 @@ package me.bugsrain.library.adapter.base;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -32,6 +33,9 @@ public abstract class BaseRecyclerAdapter extends RecyclerView.Adapter<BaseViewH
     //块底部最小遮罩值
     private final static int ITEM_FOOTER_MASK_MIN = Integer.MAX_VALUE >> 2;
 
+    //最小遮罩
+    private final static int ITEM_MASK_MIN = ITEM_FOOTER_MASK_MIN;
+
     private RecyclerView mView;
 
     private ArrayList<Section> mSections;
@@ -46,12 +50,11 @@ public abstract class BaseRecyclerAdapter extends RecyclerView.Adapter<BaseViewH
         mInflater = LayoutInflater.from(mContext);
     }
 
-    protected void init(){
+    protected void init(Object[] obj){
         mSections = new ArrayList<>();
-        int count = sectionTotalCount();
-        if (count > 0) {
+        if (obj != null) {
             Section tempSection = null;
-            for (int i = 0; i < count; i++) {
+            for (int i = 0; i < obj.length; i++) {
                 Section section = new Section();
                 section.setType(i);
                 if (tempSection != null) {
@@ -61,8 +64,8 @@ public abstract class BaseRecyclerAdapter extends RecyclerView.Adapter<BaseViewH
                 section.setHeaderLeftImageId(initSectionHeaderLeftImage(section));
                 section.setFooterLeftContent(initSectionFooterLeftContent(section));
                 section.setFooterLeftImageId(initSectionFooterLeftImage(section));
-
-                sectionInit(section);
+                section.setData(obj[i], false);
+                sectionInit(section, obj[i]);
                 tempSection = section;
                 mSections.add(section);
 //                System.out.println("->>>>>>>>>>>>>>>> section index = " + i + ", start = " + section.start + ", end = " + section.end + ", count = " + section.itemCount);
@@ -113,6 +116,10 @@ public abstract class BaseRecyclerAdapter extends RecyclerView.Adapter<BaseViewH
         return viewType;
     }
 
+    public boolean isTypeNotItem(int viewType){
+        return viewType > ITEM_MASK_MIN ;
+    }
+
     @Override
     public int getItemViewType(int position) {
         int type = 0;
@@ -144,10 +151,21 @@ public abstract class BaseRecyclerAdapter extends RecyclerView.Adapter<BaseViewH
 
     public void refreshData() {
         for (Section section : mSections) {
-            sectionInit(section);
+            sectionInit(section, section.getData());
 //            notifyItemRangeChanged(section.getStart(), section.itemCount);
         }
         notifyDataSetChanged();
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(BaseViewHolder holder) {
+        super.onViewDetachedFromWindow(holder);
+        Log.d("haha", "onViewAttachedToWindow() called with: holder.getType() = [" + holder.getType() + "]");
+        int type = getTypeCompat(holder.getType());
+        if(!isSectionEmpty()) {
+            Section section = mSections.get(type);
+            section.getItemViewProvider().onDetachedFromWindow(holder, section);
+        }
     }
 
     @Override
@@ -187,9 +205,7 @@ public abstract class BaseRecyclerAdapter extends RecyclerView.Adapter<BaseViewH
         return -1;
     }
 
-    protected abstract int sectionTotalCount();
-
-    protected abstract void sectionInit(Section section);
+    protected abstract void sectionInit(Section section, Object data);
 
 
     private boolean isSectionEmpty() {
@@ -204,4 +220,7 @@ public abstract class BaseRecyclerAdapter extends RecyclerView.Adapter<BaseViewH
         return mView;
     }
 
+    public ArrayList<Section> getSections() {
+        return mSections;
+    }
 }

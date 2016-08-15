@@ -1,9 +1,12 @@
 package me.bugsrain.multiplesectionrecycler.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 
 import me.bugsrain.library.adapter.base.BaseRecyclerAdapter;
 import me.bugsrain.library.adapter.base.Section;
+import me.bugsrain.library.adapter.holder.BaseViewHolder;
 import me.bugsrain.multiplesectionrecycler.provider.ItemViewBannerProvider;
 import me.bugsrain.multiplesectionrecycler.provider.ItemViewProvider1;
 import me.bugsrain.multiplesectionrecycler.provider.ItemViewProvider2;
@@ -15,36 +18,67 @@ import me.bugsrain.multiplesectionrecycler.provider.ItemViewProvider4;
  */
 
 public class MultipleAdapter extends BaseRecyclerAdapter {
-    private Object[] mData;
+
     public MultipleAdapter(Context mContext, Object... data) {
         super(mContext);
-        mData = data;
-        init();
+        init(data);
+
     }
 
     @Override
-    protected int sectionTotalCount() {
-        return 5;
+    public void onViewAttachedToWindow(BaseViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+
     }
 
     @Override
-    protected void sectionInit(Section section) {
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        GridLayoutManager manager = new GridLayoutManager(getContext(), 3);
+        manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                int type = getItemViewType(position);
+                if(type == 0){
+                    return 3;
+                }else if(isTypeNotItem(type)){
+                    return 3;
+                }else if( type == 2){
+                    return 1;
+                }
+                return 1;
+            }
+
+
+
+            @Override
+            public int getSpanGroupIndex(int adapterPosition, int spanCount) {
+                return super.getSpanGroupIndex(adapterPosition, spanCount);
+            }
+
+        });
+        recyclerView.setLayoutManager(manager);
+
+        super.onAttachedToRecyclerView(recyclerView);
+    }
+
+    @Override
+    protected void sectionInit(Section section, Object data) {
         switch (section.getType()){
             case 0:
 
-                section.setData(mData[0], true);
+                section.setData(data, true);
                 section.setItemViewProvider(ItemViewBannerProvider.class);
                 break;
             case 1:
-                section.setData(mData[1], false);
+                section.setData(data, false);
                 section.setItemViewProvider(ItemViewProvider1.class);
                 break;
             case 2:
-                section.setData(mData[2], false);
+                section.setData(data, false);
                 section.setItemViewProvider(ItemViewProvider2.class);
                 break;
             case 3:
-                section.setData(mData[3], false);
+                section.setData(data, false);
                 section.setItemViewProvider(ItemViewProvider3.class);
                 break;
             case 4:
@@ -70,4 +104,6 @@ public class MultipleAdapter extends BaseRecyclerAdapter {
         }
         return super.initSectionFooterLeftContent(section);
     }
+
+
 }
